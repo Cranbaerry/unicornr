@@ -1,0 +1,31 @@
+.icon-48-transactionnotifications {
+      background-image: url(../images/l_transactionnotifications.png);
+      padding-left:60px!important;
+}
+
+.icon-48-transactionnotification {
+      background-image: url(../images/l_transactionnotifications.png);
+      padding-left:60px!important;
+}
+
+.color-box-transactionnotifications { 
+      float: left;      width: 15px;      height: 15px;      margin-right: 5px;      border: 1px solid rgba(0, 0, 0, .2);}
+
+.icon-48-statusupdatenotifications {
+      background-image: url(../images/l_statusupdatenotifications.png);
+      padding-left:60px!important;
+}
+
+.icon-48-statusupdatenotification {
+      background-image: url(../images/l_statusupdatenotifications.png);
+      padding-left:60px!important;
+}
+
+.color-box-statusupdatenotifications { 
+      float: left;      width: 15px;      height: 15px;      margin-right: 5px;      border: 1px solid rgba(0, 0, 0, .2);}
+
+
+
+.other-filters{
+    padding: 0 14px;
+}
