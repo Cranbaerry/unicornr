@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="filter">
+        <field name="search" type="text" description="COM_UNICORNR_WORKFLOWS_SEARCH_FILTER_SUBMIT"
+               label="COM_USERS_FILTER_SEARCH_DESC"
+               class="js-stools-search-string" />
+
+        <field name="state"
+               type="status"
+               label="COM_UNICORNR_WORKFLOWS_FILTER_STATE"
+               description="COM_UNICORNR_WORKFLOWS_FILTER_STATE_DESC"
+               onchange="this.form.submit();"
+        >
+            <option value="">JOPTION_SELECT_PUBLISHED</option>
+        </field>
+
+        <field name="type" type="sql" label="COM_UNICORNR_WORKFLOWS_FORM_LBL_WORKFLOW_TYPE" query="SELECT `id` AS `id`, `name` AS val FROM `#__unicornr_workflows_types`" header="COM_UNICORNR_WORKFLOWS_WORKFLOWS_TYPE_FILTER" key_field="id" value_field="val" class="inputbox" onchange="this.form.submit()" translate="true"/>
+<field name="sendtype" label="COM_UNICORNR_WORKFLOWS_FORM_LBL_WORKFLOW_SENDTYPE" type="list" onchange="this.form.submit();" default="COM_UNICORNR_WORKFLOWS_WORKFLOWS_SENDTYPE_FILTER">
+  <option value="">COM_UNICORNR_WORKFLOWS_WORKFLOWS_SENDTYPE_FILTER</option>
+  <option value="after">COM_UNICORNR_WORKFLOWS_WORKFLOWS_SENDTYPE_OPTION_AFTER</option>
+  <option value="before">COM_UNICORNR_WORKFLOWS_WORKFLOWS_SENDTYPE_OPTION_BEFORE</option>
+</field>
+
+
+    </fields>
+
+    <fields name="list">
+
+        <field name="fullordering"
+               type="list"
+               label="COM_UNICORNR_WORKFLOWS_LIST_FULL_ORDERING"
+               description="COM_UNICORNR_WORKFLOWS_LIST_FULL_ORDERING_DESC"
+               onchange="this.form.submit();"
+               default="a.id DESC"
+        >
+            <option value="">JGLOBAL_SORT_BY</option>
+            <option value="a.state ASC">COM_UNICORNR_WORKFLOWS_STATE_ASC</option><option value="a.state DESC">COM_UNICORNR_WORKFLOWS_STATE_DESC</option><option value="a.ordering ASC">COM_UNICORNR_WORKFLOWS_ORDERING_ASC</option><option value="a.ordering DESC">COM_UNICORNR_WORKFLOWS_ORDERING_DESC</option><option value="a.name ASC">COM_UNICORNR_WORKFLOWS_NAME_ASC</option><option value="a.name DESC">COM_UNICORNR_WORKFLOWS_NAME_DESC</option><option value="a.type ASC">COM_UNICORNR_WORKFLOWS_TYPE_ASC</option><option value="a.type DESC">COM_UNICORNR_WORKFLOWS_TYPE_DESC</option><option value="a.keyword ASC">COM_UNICORNR_WORKFLOWS_KEYWORD_ASC</option><option value="a.keyword DESC">COM_UNICORNR_WORKFLOWS_KEYWORD_DESC</option><option value="a.sendtype ASC">COM_UNICORNR_WORKFLOWS_SENDTYPE_ASC</option><option value="a.sendtype DESC">COM_UNICORNR_WORKFLOWS_SENDTYPE_DESC</option><option value="a.workflow ASC">COM_UNICORNR_WORKFLOWS_WORKFLOW_ASC</option><option value="a.workflow DESC">COM_UNICORNR_WORKFLOWS_WORKFLOW_DESC</option>
+
+        </field>
+
+       <field name="limit"
+               type="limitbox"
+               label="COM_UNICORNR_WORKFLOWS_LIST_LIMIT"
+               description="COM_UNICORNR_WORKFLOWS_LIST_LIMIT_DESC"
+               class="input-mini"
+               default="25"
+               onchange="this.form.submit();"
+        />
+
+    </fields>
+
+</form>
