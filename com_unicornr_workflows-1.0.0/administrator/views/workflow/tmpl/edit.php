@@ -19,7 +19,8 @@ use \Joomla\CMS\Language\Text;
 HTMLHelper::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 HTMLHelper::_('behavior.tooltip');
 HTMLHelper::_('behavior.formvalidation');
-HTMLHelper::_('formbehavior.chosen', 'select');
+// Remove or comment out the next line to prevent Chosen from being applied globally
+// HTMLHelper::_('formbehavior.chosen', 'select');
 HTMLHelper::_('behavior.keepalive');
 
 // Import CSS
@@ -130,8 +131,10 @@ $document->addStyleSheet(Uri::root() . 'media/com_unicornr_workflows/css/form.cs
 								<label><?php echo JText::_('Image'); ?>:</label>
 							</div>
 							<div class="controls">
-								<input type="text" class="workflow-image" placeholder="Image URL" style="max-width:300px;">
-								<img class="workflow-image-preview" src="" alt="" style="max-height:40px; max-width:60px; display:none; margin-left:5px;" />
+								<input type="file" class="workflow-image" accept="image/*" style="max-width:300px;">
+								<br>
+								<img class="workflow-image-preview" src="" alt="" style="max-width:100%; height:auto; max-height:200px; display:none; margin-top:8px; border:1px solid #ccc; border-radius:4px; background:#fff;" />
+								<span class="workflow-image-uploading" style="display:none;"><?php echo JText::_('Uploading...'); ?></span>
 							</div>
 						</div>
 						<div class="control-group">
@@ -174,15 +177,64 @@ $document->addStyleSheet(Uri::root() . 'media/com_unicornr_workflows/css/form.cs
 			var message = $item.find('.workflow-message').val();
 			var interval = parseInt($item.find('.workflow-interval').val(), 10) || 0;
 			var unit = $item.find('.workflow-unit').val();
-			var image = $item.find('.workflow-image').val() || '';
+			var image = $item.find('.workflow-image').data('uploaded-url') || '';
 			items.push({message: message, time: interval, unit: unit, image: image});
 		});
 		$('#jform_workflow').val(JSON.stringify(items));
 	}
 
+	function uploadImage(file, $input, $preview, $uploading, callback) {
+		var formData = new FormData();
+		formData.append('file', file);
+		formData.append('option', 'com_unicornr_workflows');
+		formData.append('task', 'workflow.uploadImage');
+		formData.append('<?php echo JSession::getFormToken(); ?>', '1');
+		$uploading.show();
+		$.ajax({
+			// Change 'workflow' to 'workflowstype' if your controller is workflowstype.php,
+			// or keep as 'workflow' if your controller is workflow.php
+			url: 'index.php?option=com_unicornr_workflows&task=workflow.uploadImage',
+			type: 'POST',
+			data: formData,
+			processData: false,
+			contentType: false,
+			dataType: 'json',
+			success: function(resp) {
+				$uploading.hide();
+				// Fix: handle both resp.success and resp.data.success (Joomla JsonResponse wraps your array in "data")
+				var url = '';
+				if (resp && resp.data && resp.data.success && resp.data.url) {
+					url = resp.data.url;
+				} else if (resp && resp.success && resp.url) {
+					url = resp.url;
+				}
+				if (url) {
+					$input.data('uploaded-url', url);
+					$preview.attr('src', url).show();
+					if (typeof callback === 'function') callback(url);
+				} else {
+					alert((resp && resp.message) ? resp.message : 'Image upload failed');
+					$input.val('');
+					$input.data('uploaded-url', '');
+					$preview.hide();
+					if (typeof callback === 'function') callback('');
+				}
+				serializeWorkflowItems();
+			},
+			error: function() {
+				$uploading.hide();
+				alert('Image upload failed');
+				$input.val('');
+				$input.data('uploaded-url', '');
+				$preview.hide();
+				if (typeof callback === 'function') callback('');
+				serializeWorkflowItems();
+			}
+		});
+	}
+
 	function addWorkflowItem(data) {
 		var $tpl = $($('#workflow-item-template').html());
-		// Dynamically add required attributes to visible fields
 		$tpl.find('.workflow-message').attr('required', true);
 		$tpl.find('.workflow-interval').attr('required', true);
 		if (data) {
@@ -190,30 +242,33 @@ $document->addStyleSheet(Uri::root() . 'media/com_unicornr_workflows/css/form.cs
 			$tpl.find('.workflow-interval').val(data.time || '');
 			$tpl.find('.workflow-unit').val(data.unit || 'minutes');
 			if (data.image) {
-				$tpl.find('.workflow-image').val(data.image);
-				if (data.image.trim() !== '') {
-					$tpl.find('.workflow-image-preview').attr('src', data.image).show();
-				} else {
-					$tpl.find('.workflow-image-preview').hide();
-				}
+				$tpl.find('.workflow-image').data('uploaded-url', data.image);
+				$tpl.find('.workflow-image-preview').attr('src', data.image).show();
 			}
 		}
-		// Show preview if URL is present
-		$tpl.find('.workflow-image').on('input change', function(){
-			var val = $(this).val();
-			var $preview = $tpl.find('.workflow-image-preview');
-			if(val && val.trim() !== '') {
-				$preview.attr('src', val).show();
-			} else {
-				$preview.hide();
-			}
+		// Fix: Remove .chosen() or .formbehavior.chosen for workflow-unit selects
+		// and trigger change event for serialization
+		$tpl.find('.workflow-unit').on('change', function(){
 			serializeWorkflowItems();
+		});
+		$tpl.find('.workflow-image').on('change', function(){
+			var $input = $(this);
+			var $preview = $tpl.find('.workflow-image-preview');
+			var $uploading = $tpl.find('.workflow-image-uploading');
+			var file = this.files && this.files[0] ? this.files[0] : null;
+			if (file) {
+				uploadImage(file, $input, $preview, $uploading);
+			} else {
+				$input.data('uploaded-url', '');
+				$preview.hide();
+				serializeWorkflowItems();
+			}
 		});
 		$tpl.find('.remove_workflow_item').on('click', function(){
 			$tpl.remove();
 			serializeWorkflowItems();
 		});
-		$tpl.find('input,select,textarea').on('input change', function(){
+		$tpl.find('input,textarea').on('input change', function(){
 			serializeWorkflowItems();
 		});
 		$('#workflow_items_container').append($tpl);
@@ -221,7 +276,6 @@ $document->addStyleSheet(Uri::root() . 'media/com_unicornr_workflows/css/form.cs
 	}
 
 	$(function(){
-		// Load existing data
 		var existing = [];
 		try { 
 			var raw = $('#jform_workflow').val();
