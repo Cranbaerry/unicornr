@@ -36,7 +36,8 @@ $document->addStyleSheet(Uri::root() . 'media/com_unicornr_workflows/css/form.cs
 				js('#jform_type option[value="' + js(this).val() + '"]').attr('selected', true);
 			}
 		});
-		// Fix: Only trigger chosen update if #jform_type uses Chosen		if (js("#jform_type").hasClass("chzn-done")) {
+		// Fix: Only trigger chosen update if #jform_type uses Chosen		
+		if (js("#jform_type").hasClass("chzn-done")) {
 			js("#jform_type").trigger("liszt:updated");
 		}
 
