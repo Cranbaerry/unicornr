@@ -160,6 +160,7 @@ class Unicornr_workflowsViewWorkflows extends \Joomla\CMS\MVC\View\HtmlView
 			'a.`keyword`' => JText::_('COM_UNICORNR_WORKFLOWS_WORKFLOWS_KEYWORD'),
 			'a.`sendtype`' => JText::_('COM_UNICORNR_WORKFLOWS_WORKFLOWS_SENDTYPE'),
 			'a.`workflow`' => JText::_('COM_UNICORNR_WORKFLOWS_WORKFLOWS_WORKFLOW'),
+			'a.`updatetype`' => JText::_('COM_UNICORNR_WORKFLOWS_WORKFLOWS_UPDATETYPE'),
 		);
 	}
 

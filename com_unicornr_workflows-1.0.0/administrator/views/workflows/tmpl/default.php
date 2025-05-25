@@ -89,6 +89,9 @@ $sortFields = $this->getSortFields();
 						<?php echo JHtml::_('searchtools.sort',  'COM_UNICORNR_WORKFLOWS_WORKFLOWS_KEYWORD', 'a.keyword', $listDirn, $listOrder); ?>
 					</th>
 					<th class='nowrap'>
+						<?php echo JHtml::_('searchtools.sort',  'COM_UNICORNR_WORKFLOWS_WORKFLOWS_UPDATETYPE', 'a.updatetype', $listDirn, $listOrder); ?>
+					</th>
+					<th class='nowrap'>
 						<?php echo JHtml::_('searchtools.sort',  'COM_UNICORNR_WORKFLOWS_WORKFLOWS_SENDTYPE', 'a.sendtype', $listDirn, $listOrder); ?>
 					</th>
 					<th class='nowrap'>
@@ -166,13 +169,38 @@ $sortFields = $this->getSortFields();
 							<?php echo $item->type; ?>
 						</td>
 						<td class="">
-							<?php echo $item->keyword; ?>
+							<?php echo empty($item->keyword) ? '<span class="text-muted">-</span>' : $item->keyword; ?>
+						</td>
+						<td class="">
+							<?php echo empty($item->updatetype) ? '<span class="text-muted">-</span>' : $item->updatetype; ?>
 						</td>
 						<td class="">
 							<?php echo $item->sendtype; ?>
 						</td>
 						<td class="">
-							<?php echo $item->workflow; ?>
+							<?php
+							// Pretty print workflow JSON as cards with border, with "Time: {time} {unit}"
+							$workflows = [];
+							if (!empty($item->workflow)) {
+								$workflows = json_decode($item->workflow, true);
+							}
+							if (is_array($workflows) && count($workflows)) {
+								echo '<div style="display:flex; flex-wrap:wrap; gap:10px;">';
+								foreach ($workflows as $wf) {
+									echo '<div style="border:1px solid #ccc; border-radius:6px; background:#f9f9f9; padding:10px; flex-basis:260px; flex-grow:1; min-width:180px; max-width:100%; margin-bottom:8px; box-shadow:0 1px 2px #eee;">';
+									echo '<div><strong>Time:</strong> ' . htmlspecialchars($wf['time'] ?? '') . ' ' . htmlspecialchars($wf['unit'] ?? '') . '</div>';
+									echo '<div><strong>Message:</strong><br>' . nl2br(htmlspecialchars($wf['message'] ?? '')) . '</div>';
+									
+									if (!empty($wf['image'])) {
+										echo '<div style="margin-top:6px;"><img src="' . htmlspecialchars($wf['image']) . '" alt="" style="max-width:120px; max-height:90px; border:1px solid #ccc; border-radius:3px; background:#fff;" /></div>';
+									}
+									echo '</div>';
+								}
+								echo '</div>';
+							} else {
+								echo '<span class="text-muted">-</span>';
+							}
+							?>
 						</td>
 						
 					</tr>

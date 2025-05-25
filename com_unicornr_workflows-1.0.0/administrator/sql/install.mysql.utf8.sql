@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS `#__unicornr_workflows` (
 `keyword` TEXT NOT NULL ,
 `sendtype` VARCHAR(255)  NOT NULL  DEFAULT "after",
 `workflow` TEXT NOT NULL ,
+`updatetype` TEXT NOT NULL ,
 PRIMARY KEY (`id`)
 ,KEY `idx_state` (`state`)
 ,KEY `idx_checked_out` (`checked_out`)

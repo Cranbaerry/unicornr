@@ -21,6 +21,7 @@
       <option value="before">COM_UNICORNR_WORKFLOWS_WORKFLOWS_SENDTYPE_OPTION_BEFORE</option>
     </field>
     <field name="workflow" filter="raw" type="textarea" required="true" label="COM_UNICORNR_WORKFLOWS_FORM_LBL_WORKFLOW_WORKFLOW" description="COM_UNICORNR_WORKFLOWS_FORM_DESC_WORKFLOW_WORKFLOW" hint="COM_UNICORNR_WORKFLOWS_FORM_LBL_WORKFLOW_WORKFLOW"/>
+    <field name="updatetype" type="workflowupdatetype" label="COM_UNICORNR_WORKFLOWS_FORM_LBL_WORKFLOW_UPDATETYPE" description="COM_UNICORNR_WORKFLOWS_FORM_DESC_WORKFLOW_UPDATETYPE" hint="COM_UNICORNR_WORKFLOWS_FORM_LBL_WORKFLOW_UPDATETYPE" showon="type:5,6"/>
     <field name="version_note" type="text" label="JGLOBAL_FIELD_VERSION_NOTE_LABEL" description="JGLOBAL_FIELD_VERSION_NOTE_DESC" class="inputbox" size="45" labelclass="control-label"/>
   </fieldset>
 </form>

@@ -223,6 +223,18 @@ class Unicornr_workflowsModelWorkflow extends \Joomla\CMS\MVC\Model\AdminModel
 					$table->type = '';
 				}
 
+				if (!empty($table->updatetype))
+				{
+					if (is_array($table->updatetype))
+					{
+						$table->updatetype = implode(',', $table->updatetype);
+					}
+				}
+				else
+				{
+					$table->updatetype = '';
+				}
+
 
 				// Trigger the before save event.
 				$result = $dispatcher->trigger($this->event_before_save, array($context, &$table, true));

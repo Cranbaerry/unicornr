@@ -131,6 +131,27 @@ class Unicornr_workflowsTableworkflow extends Table
 			$array['sendtype'] = '';
 		}
 
+		// Support for multiple field: updatetype
+		if (isset($array['updatetype']))
+		{
+			if (is_array($array['updatetype']))
+			{
+				$array['updatetype'] = implode(',',$array['updatetype']);
+			}
+			elseif (strpos($array['updatetype'], ',') != false)
+			{
+				$array['updatetype'] = explode(',',$array['updatetype']);
+			}
+			elseif (strlen($array['updatetype']) == 0)
+			{
+				$array['updatetype'] = '';
+			}
+		}
+		else
+		{
+			$array['updatetype'] = '';
+		}
+
 		if (isset($array['params']) && is_array($array['params']))
 		{
 			$registry = new JRegistry;

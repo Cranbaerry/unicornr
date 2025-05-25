@@ -45,6 +45,7 @@ class Unicornr_workflowsModelWorkflows extends \Joomla\CMS\MVC\Model\ListModel
 				'keyword', 'a.keyword',
 				'sendtype', 'a.sendtype',
 				'workflow', 'a.workflow',
+				'updatetype', 'a.updatetype',
 			);
 		}
 
@@ -249,6 +250,33 @@ class Unicornr_workflowsModelWorkflows extends \Joomla\CMS\MVC\Model\ListModel
 				$oneItem->type = !empty($textValue) ? implode(', ', $textValue) : $oneItem->type;
 			}
 					$oneItem->sendtype = !empty($oneItem->sendtype) ? Text::_('COM_UNICORNR_WORKFLOWS_WORKFLOWS_SENDTYPE_OPTION_' . preg_replace('/[^A-Za-z0-9\_-]/', '',strtoupper(str_replace(' ', '_',$oneItem->sendtype)))) : '';
+
+			if (isset($oneItem->updatetype))
+			{
+				$values    = explode(',', $oneItem->updatetype);
+				$textValue = array();
+
+				foreach ($values as $value)
+				{
+					if (!empty($value))
+					{
+						$db = JFactory::getDbo();
+						$query = "SELECT *
+  FROM #__unicornr_transaction_custom
+ WHERE #__unicornr_transaction_custom
+.id = $value AND fieldtype = 'status';";
+						$db->setQuery($query);
+						$results = $db->loadObject();
+
+						if ($results)
+						{
+							$textValue[] = $results->fielddata;
+						}
+					}
+				}
+
+				$oneItem->updatetype = !empty($textValue) ? implode(', ', $textValue) : $oneItem->updatetype;
+			}
 		}
 
 		return $items;
